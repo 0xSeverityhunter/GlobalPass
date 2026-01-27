@@ -36,7 +36,7 @@ export function CustomSelect({ options, value, onChange, placeholder, icon }: Cu
     }, []);
 
     return (
-        <div className="relative w-full" ref={containerRef}>
+        <div className={clsx("relative w-full", isOpen && "z-[100]")} ref={containerRef}>
             {/* Trigger Button */}
             <div className="relative group">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-400 group-hover:text-charcoal-700 dark:group-hover:text-white transition-colors pointer-events-none">
@@ -68,7 +68,7 @@ export function CustomSelect({ options, value, onChange, placeholder, icon }: Cu
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.98 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute z-50 w-full mt-2 overflow-hidden bg-white dark:bg-brand-surface/95 backdrop-blur-xl border border-charcoal-200 dark:border-white/10 rounded-2xl shadow-2xl max-h-80"
+                        className="absolute z-[100] w-full mt-2 overflow-hidden bg-white dark:bg-brand-surface/95 backdrop-blur-xl border border-charcoal-200 dark:border-white/10 rounded-2xl shadow-2xl max-h-80"
                     >
                         <div className="overflow-y-auto max-h-80 p-2 custom-scrollbar">
                             {/* Search/Filter could go here if list is long */}
