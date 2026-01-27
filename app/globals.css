@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   LIGHT THEME (Default)
+   ============================================ */
+:root {
+  --foreground-rgb: 17, 24, 39;
+  /* charcoal-900 */
+  --background-start-rgb: 250, 250, 250;
+  --background-end-rgb: 245, 245, 245;
+  --surface-rgb: 255, 255, 255;
+  --border-rgb: 229, 231, 235;
+  /* charcoal-200 */
+}
+
+/* ============================================
+   DARK THEME
+   ============================================ */
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 5, 5, 5;
+  --background-end-rgb: 5, 5, 5;
+  --surface-rgb: 18, 18, 18;
+  --border-rgb: 55, 65, 81;
+  /* charcoal-700 */
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb)));
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ============================================
+   SCROLLBAR STYLES
+   ============================================ */
+/* Light Theme Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--background-start-rgb));
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+/* Dark Theme Scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #333;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
