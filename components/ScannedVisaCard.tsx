@@ -6,13 +6,15 @@ import {
     FileText, AlertTriangle, Fingerprint
 } from "lucide-react";
 import { ParsedVisaData } from "@/lib/gemini";
+import { ComparisonResult } from "@/lib/comparison";
 import clsx from "clsx";
 
 interface ScannedVisaCardProps {
     data: ParsedVisaData;
+    comparison?: ComparisonResult | null;
 }
 
-export function ScannedVisaCard({ data }: ScannedVisaCardProps) {
+export function ScannedVisaCard({ data, comparison }: ScannedVisaCardProps) {
     const container = {
         hidden: { opacity: 0 },
         show: {
@@ -33,6 +35,36 @@ export function ScannedVisaCard({ data }: ScannedVisaCardProps) {
             animate="show"
             className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 pb-20"
         >
+            {/* Comparison Result Banner */}
+            {comparison && (
+                <motion.div
+                    variants={item}
+                    className={clsx(
+                        "md:col-span-3 p-6 rounded-[2rem] border relative overflow-hidden flex items-start gap-5 shadow-lg",
+                        comparison.status === 'valid' && "bg-emerald-500/10 border-emerald-500/20 text-emerald-900 dark:text-emerald-100",
+                        comparison.status === 'warning' && "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-100",
+                        comparison.status === 'invalid' && "bg-rose-500/10 border-rose-500/20 text-rose-900 dark:text-rose-100",
+                    )}
+                >
+                    <div className={clsx(
+                        "p-3 rounded-xl shrink-0",
+                        comparison.status === 'valid' && "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400",
+                        comparison.status === 'warning' && "bg-amber-500/20 text-amber-600 dark:text-amber-400",
+                        comparison.status === 'invalid' && "bg-rose-500/20 text-rose-600 dark:text-rose-400",
+                    )}>
+                        {comparison.status === 'valid' && <CheckCircle2 className="w-8 h-8" />}
+                        {comparison.status === 'warning' && <AlertTriangle className="w-8 h-8" />}
+                        {comparison.status === 'invalid' && <XCircle className="w-8 h-8" />}
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-bold mb-1">{comparison.title}</h3>
+                        <p className="opacity-90 leading-relaxed text-sm md:text-base">
+                            {comparison.message}
+                        </p>
+                    </div>
+                </motion.div>
+            )}
+
             {/* Main Status Card */}
             <motion.div
                 variants={item}

@@ -36,7 +36,7 @@ If any field cannot be determined, use "unknown" or empty array for restrictions
 Return ONLY valid JSON, no markdown or explanation.`;
 
 export async function parseVisaDocument(imageBase64: string, mimeType: string): Promise<ParsedVisaData> {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const imagePart = {
         inlineData: {

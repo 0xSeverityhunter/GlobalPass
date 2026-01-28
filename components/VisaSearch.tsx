@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowRight, Plane, MapPin, ScanLine, Search } from 'lucide-react';
 import { countries, getTravelRequirements, TravelRequirements } from '@/lib/data';
 import { ParsedVisaData } from '@/lib/gemini';
+import { compareVisaWithRequirements, ComparisonResult } from '@/lib/comparison';
 import { ResultDashboard } from './ResultDashboard';
 import { CustomSelect } from './CustomSelect';
 import { VisaUpload } from './VisaUpload';
@@ -19,8 +20,21 @@ export function VisaSearch() {
     const [destination, setDestination] = useState<string>('');
     const [data, setData] = useState<TravelRequirements | null>(null);
     const [scannedVisa, setScannedVisa] = useState<ParsedVisaData | null>(null);
+    const [comparisonResult, setComparisonResult] = useState<ComparisonResult | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Effect to run comparison when we have both a scanned visa and a destination
+    useEffect(() => {
+        if (scannedVisa && destination && mode === 'scan') {
+            // In a real app, we might check the scanned visa's nationality against the passport state if available
+            // For now, we compare visa vs destination
+            const result = compareVisaWithRequirements(scannedVisa, destination, passport);
+            setComparisonResult(result);
+        } else {
+            setComparisonResult(null);
+        }
+    }, [scannedVisa, destination, mode, passport]);
 
     const handleSearch = async () => {
         if (!passport || !destination) return;
@@ -60,6 +74,7 @@ export function VisaSearch() {
                         onClick={() => {
                             setMode('search');
                             setScannedVisa(null);
+                            setComparisonResult(null);
                             setError(null);
                         }}
                         className={clsx(
@@ -95,7 +110,7 @@ export function VisaSearch() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white/80 dark:bg-brand-gray/50 backdrop-blur-xl rounded-[2rem] border border-charcoal-200 dark:border-white/5 p-4 md:p-6 mb-12 shadow-xl dark:shadow-2xl"
+                className="relative z-50 bg-white/80 dark:bg-brand-gray/50 backdrop-blur-xl rounded-[2rem] border border-charcoal-200 dark:border-white/5 p-4 md:p-6 mb-12 shadow-xl dark:shadow-2xl"
             >
                 <AnimatePresence mode="wait">
                     {mode === 'search' ? (
@@ -149,7 +164,25 @@ export function VisaSearch() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
+                            className="flex flex-col gap-6"
                         >
+                            <div className="flex flex-col md:flex-row items-center gap-4">
+                                <CustomSelect
+                                    icon={<Plane className="w-5 h-5" />}
+                                    placeholder="Select destination to verify entry..."
+                                    options={countryOptions}
+                                    value={destination}
+                                    onChange={setDestination}
+                                />
+                                {destination && (
+                                    <div className="hidden md:block text-sm text-green-500 font-medium whitespace-nowrap px-4">
+                                        Active
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="w-full h-px bg-charcoal-200 dark:bg-white/10" />
+
                             <VisaUpload
                                 onScanComplete={handleScanComplete}
                                 onError={handleScanError}
@@ -179,7 +212,12 @@ export function VisaSearch() {
                     destinationCountry={destinationName}
                 />
             ) : (
-                scannedVisa && <ScannedVisaCard data={scannedVisa} />
+                scannedVisa && (
+                    <ScannedVisaCard
+                        data={scannedVisa}
+                        comparison={comparisonResult}
+                    />
+                )
             )}
         </div>
     );
