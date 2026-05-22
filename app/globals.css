@@ -29,10 +29,33 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom,
-      rgb(var(--background-start-rgb)),
-      rgb(var(--background-end-rgb)));
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #fafafa;
+  background-image: url('/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  position: relative;
+}
+
+/* Light mode overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Dark mode body background */
+.dark body {
+  background-color: #050505;
+}
+
+/* Dark mode overlay - let more of the image show through */
+.dark body::before {
+  background: rgba(0, 0, 0, 0.4);
 }
 
 /* ============================================
